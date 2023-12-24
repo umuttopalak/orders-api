@@ -46,14 +46,14 @@ func (r *RedisRepo) Insert(ctx context.Context, order model.Order) error {
 	return nil
 }
 
-var errNotExist = errors.New("order does not exist")
+var ErrNotExist = errors.New("order does not exist")
 
 func (r *RedisRepo) FindByID(ctx context.Context, id uint64) (model.Order, error) {
 	key := OrderIDKey(id)
 
 	value, err := r.Client.Get(ctx, key).Result()
 	if errors.Is(err, redis.Nil) {
-		return model.Order{}, errNotExist
+		return model.Order{}, ErrNotExist
 	} else if err != nil {
 		return model.Order{}, fmt.Errorf("get order: %w", err)
 	}
@@ -75,7 +75,7 @@ func (r *RedisRepo) DeleteByID(ctx context.Context, id uint64) error {
 	err := txn.Del(ctx, key).Err()
 	if errors.Is(err, redis.Nil) {
 		txn.Discard()
-		return errNotExist
+		return ErrNotExist
 	} else if err != nil {
 		txn.Discard()
 		return fmt.Errorf("get order: %w", err)
@@ -103,7 +103,7 @@ func (r *RedisRepo) Update(ctx context.Context, order model.Order) error {
 
 	err = r.Client.SetXX(ctx, key, string(data), 0).Err()
 	if errors.Is(err, redis.Nil) {
-		return errNotExist
+		return ErrNotExist
 	} else if err != nil {
 		return fmt.Errorf("set order: %w", err)
 	}
