@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  # Go service
+  go-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      redis:
+        condition: service_healthy  # Redis servisi sağlıklı olduğunda devam et
+    environment:
+      REDIS_ADDRESS: "redis:6379"
+
+  # Redis service
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
