@@ -1,10 +1,10 @@
 package model
 
-type Item struct {
-	ItemID    uint64   `json:"item_id"`
-	ItemName  string   `json:"item_name"`
-	ItemPrice int64    `json:"item_price"`
-	Category  Category `json:"category"`
+type Product struct {
+	ProductID    uint64   `json:"product_id"`
+	ProductName  string   `json:"product_name"`
+	ProductPrice int64    `json:"product_price"`
+	Category     Category `json:"category"`
 }
 
 type Category struct {
